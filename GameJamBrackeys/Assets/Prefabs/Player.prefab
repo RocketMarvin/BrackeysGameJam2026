@@ -137,8 +137,10 @@ MonoBehaviour:
     - {fileID: 0}
     - {fileID: 0}
     - {fileID: 0}
+    - {fileID: 0}
+  eventSystem: {fileID: 0}
+  cameraSwitchTime: 0.3
   IsZoomedIn: 0
-  CurrentRoom: {fileID: 0}
 --- !u!50 &3659950241733919285
 Rigidbody2D:
   serializedVersion: 5
