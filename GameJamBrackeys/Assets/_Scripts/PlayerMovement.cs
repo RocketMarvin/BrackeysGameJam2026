@@ -1,130 +1,120 @@
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private InputReader input;
-    [SerializeField] float jumpForce;
-    [SerializeField] float moveSpeed;
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private float moveSpeed = 8f;
+    [SerializeField] private float jumpForce = 16f;
+    [SerializeField] private float jumpCutMultiplier = 0.5f; 
+    [SerializeField] private float coyoteTimer = 0.15f;
+    [SerializeField] private float jumpBufferTimer = 0.3f;
+    [SerializeField] private float cancelJumpTimer = 0.2f;
+    [SerializeField] private float groundCheckDistance = 0.6f;
+    [SerializeField] private LayerMask groundLayer;
 
-    Rigidbody2D rb;
-    private bool IsGrounded = true;
-    private float JumpBuffer = 0f;
-    private readonly float JumpBufferTimer = 0.3f;
+    private Rigidbody2D rb;
+    private Vector2 moveInput;
+    private float coyoteCounter = 0;
+    private float jumpBufferCounter;
+    private bool isGrounded;
+    private bool isHoldingJump = false;
+    private float cancelJumpCounter = 0f;
 
-    Vector2 MoveDirection;
-
-    void Start()
+    private void Awake()
     {
-        Physics2D.gravity = new Vector2(0, -15f);
         rb = GetComponent<Rigidbody2D>();
+        Physics2D.gravity = new Vector2(0, -13f);
     }
-    void FixedUpdate()
-    {
-        rb.linearVelocity = new Vector2(MoveDirection.x * moveSpeed, rb.linearVelocityY);
-        TurnToCursor();
 
-        if (JumpBuffer > 0 && IsGrounded)
+    private void Update()
+    {
+        //Ground check
+        RaycastHit2D hit = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, groundLayer);
+
+        isGrounded = (hit.collider != null);
+
+        if (isGrounded)
         {
-            rb.linearVelocity = new Vector2(rb.linearVelocityX, jumpForce);
-            JumpBuffer = 0;
-            Jump();
-            JumpBuffer = 0;
+            coyoteCounter = coyoteTimer;
         }
-        JumpBuffer -= Time.deltaTime;
-    }
-
-    private void PauseGame()
-    {
-        input.SetUIActions();
-    }
-
-    private void ResumeGame()
-    { 
-        input.SetGameplayActions();
-    }
-
-    void TurnToCursor()
-    {
-        var mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-        if (mouseWorldPos.x >= transform.position.x)
+        else
         {
-            transform.localScale = new Vector3(1, 1f, 1f);
+            coyoteCounter -= Time.deltaTime;
         }
-        else if (mouseWorldPos.x <= transform.position.x)
+        
+        if(!isHoldingJump)
         {
-            transform.localScale = new Vector3(-1f, 1f, 1f);
-        }
-    }
-
-    private void Jump()
-    {
-        JumpBuffer = JumpBufferTimer;
-    }
-
-    private void MovePlayer(Vector2 axisIn)
-    {
-        MoveDirection = axisIn;
-    }
-
-    private void MovePlayerCancelled()
-    { 
-        MoveDirection = Vector2.zero;
-    }
-
-    private void JumpCancel()
-    {
-        rb.linearVelocity = new Vector2(rb.linearVelocityX, rb.linearVelocityY * .5f);
-    }
-
-
-    private void OnCollisionStay2D(Collision2D collision)
-    {
-        if (!IsGrounded)
-        {
-            if (collision.gameObject.CompareTag("Ground") && JumpBuffer > 0)
+            cancelJumpCounter -= Time.deltaTime;
+            if(cancelJumpCounter < 0f)
             {
-                IsGrounded = true;
+                if (rb.linearVelocity.y > 0)
+                {
+                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * jumpCutMultiplier);
+                }
             }
         }
-    }
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (IsGrounded)
+
+
+        //Timer
+        jumpBufferCounter -= Time.deltaTime;
+
+
+        //Jump when
+        if (jumpBufferCounter > 0 && coyoteCounter > 0)
         {
-            if (collision.gameObject.CompareTag("Ground"))
-            {
-                IsGrounded = false;
-            }
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+            coyoteCounter = 0;
+            jumpBufferCounter = 0;
         }
+
+        //Turn to cursor
+        Vector3 mouseWorldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+        transform.localScale = (mouseWorldPoint.x >= transform.position.x) ? new Vector3(1f, 1f, 1f) : new Vector3(-1f, 1f, 1f);
     }
 
-
-
+    private void FixedUpdate()
+    {
+        rb.linearVelocity = new Vector2(moveInput.x * moveSpeed, rb.linearVelocity.y);
+    }
 
     private void OnEnable()
     {
-        input.MoveEvent += MovePlayer;
-        input.JumpEvent += Jump;
-        input.JumpCancelEvent += JumpCancel;
-        input.PauseEvent += PauseGame;
-        input.ResumeEvent += ResumeGame;
-        input.MoveCancelEvent += MovePlayerCancelled;
+        input.MoveEvent += OnMove;
+        input.MoveCancelEvent += OnMoveCancel;
+        input.JumpEvent += OnJumpPressed;
+        input.JumpCancelEvent += OnJumpReleased;
     }
+
     private void OnDisable()
     {
-        input.MoveEvent -= MovePlayer;
-        input.JumpEvent -= Jump;
-        input.JumpCancelEvent -= JumpCancel;
-        input.PauseEvent -= PauseGame;
-        input.ResumeEvent -= ResumeGame;
-        input.MoveCancelEvent -= MovePlayerCancelled;
+        input.MoveEvent -= OnMove;
+        input.MoveCancelEvent -= OnMoveCancel;
+        input.JumpEvent -= OnJumpPressed;
+        input.JumpCancelEvent -= OnJumpReleased;
     }
 
+    private void OnMove(Vector2 direction)
+    {
+        moveInput = direction;
+    }
 
+    private void OnMoveCancel()
+    {
+        moveInput = Vector2.zero;
+    }
 
+    private void OnJumpPressed()
+    {
+        jumpBufferCounter = jumpBufferTimer;
+        cancelJumpCounter = cancelJumpTimer;
+        isHoldingJump = true;
+    }
 
+    private void OnJumpReleased()
+    {
+        isHoldingJump = false;
+    }
 
 }
