@@ -27,15 +27,24 @@ public class InputReader : ScriptableObject, GameInput.IUIActions, GameInput.IGa
         _gameInput.Gameplay.Disable();
     }
     /// <summary>
-    /// Set UI controls uit en gameplay controls aan.
+    /// Zet UI controls uit en gameplay controls aan.
     /// </summary>
     public void SetGameplayActions()
     {
         _gameInput.Gameplay.Enable();
         _gameInput.UI.Disable();
     }
+
     /// <summary>
-    /// Set Gameplay controls uit en UI controls aan.
+    /// Zet input uit.
+    /// </summary>
+    public void DisableInput()
+    {
+        _gameInput.Gameplay.Disable();
+        _gameInput.UI.Disable();
+    }
+    /// <summary>
+    /// Zet Gameplay controls uit en UI controls aan.
     /// </summary>
     public void SetUIActions()
     {
@@ -60,7 +69,7 @@ public class InputReader : ScriptableObject, GameInput.IUIActions, GameInput.IGa
     public event Action SubmitEvent;
 
 
-    //Gameplay actions
+    // Gameplay actions
     public void OnAttack(InputAction.CallbackContext context)
     {
         if (context.phase == InputActionPhase.Performed)
@@ -116,7 +125,7 @@ public class InputReader : ScriptableObject, GameInput.IUIActions, GameInput.IGa
         }
     }
 
-    //UIActions
+    // UIActions
     public void OnSubmit(InputAction.CallbackContext context)
     {
         if (context.phase == InputActionPhase.Performed)
