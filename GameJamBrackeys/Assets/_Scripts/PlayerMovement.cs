@@ -55,18 +55,8 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-
         //Timer
         jumpBufferCounter -= Time.deltaTime;
-
-
-        //Jump when
-        if (jumpBufferCounter > 0 && coyoteCounter > 0)
-        {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
-            coyoteCounter = 0;
-            jumpBufferCounter = 0;
-        }
 
         //Turn to cursor
         Vector3 mouseWorldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -77,6 +67,13 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         rb.linearVelocity = new Vector2(moveInput.x * moveSpeed, rb.linearVelocity.y);
+
+        if (jumpBufferCounter > 0 && coyoteCounter > 0)
+        {
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+            coyoteCounter = 0;
+            jumpBufferCounter = 0;
+        }
     }
 
     private void OnEnable()

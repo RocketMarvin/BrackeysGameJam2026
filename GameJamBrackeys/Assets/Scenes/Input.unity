@@ -250,7 +250,7 @@ Transform:
   m_GameObject: {fileID: 899249896}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -4.5, z: 0}
+  m_LocalPosition: {x: 0, y: -7.5, z: 0}
   m_LocalScale: {x: 20.463, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -387,7 +387,7 @@ Transform:
   m_GameObject: {fileID: 1381552084}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.511, y: -3.5, z: 0}
+  m_LocalPosition: {x: 6.511, y: -6.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -455,7 +455,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 8
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -564,13 +564,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   input: {fileID: 11400000, guid: b3282c97c760a504091679b0ae0db14c, type: 2}
   groundCheck: {fileID: 1749274934}
-  moveSpeed: 3
+  moveSpeed: 4
   jumpForce: 6
   jumpCutMultiplier: 0.9
   coyoteTimer: 0.15
   jumpBufferTimer: 0.3
   cancelJumpTimer: 0.05
-  groundCheckDistance: 0.6
+  groundCheckDistance: 0.52
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -641,7 +641,7 @@ Transform:
   m_GameObject: {fileID: 1749274931}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.49, y: -3.45, z: 0}
+  m_LocalPosition: {x: -2.49, y: -6.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -663,7 +663,7 @@ Rigidbody2D:
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: d51fd22cc5955874881901d68b77613b, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -673,7 +673,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!61 &1749274936
 BoxCollider2D:
   m_ObjectHideFlags: 0
