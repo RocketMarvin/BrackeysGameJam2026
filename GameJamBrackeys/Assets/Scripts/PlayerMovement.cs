@@ -59,9 +59,9 @@ public class PlayerMovement : MonoBehaviour
         jumpBufferCounter -= Time.deltaTime;
 
         //Turn to cursor
-        Vector3 mouseWorldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        //Vector3 mouseWorldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-        transform.localScale = (mouseWorldPoint.x >= transform.position.x) ? new Vector3(1f, 1f, 1f) : new Vector3(-1f, 1f, 1f);
+        //transform.localScale = (mouseWorldPoint.x >= transform.position.x) ? new Vector3(1f, 1f, 1f) : new Vector3(-1f, 1f, 1f);
     }
 
     private void FixedUpdate()

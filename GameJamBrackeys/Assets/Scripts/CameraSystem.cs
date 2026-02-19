@@ -9,6 +9,7 @@ public class CameraSystem : MonoBehaviour
     [SerializeField] private SerializedArray<Transform> ConstantRoomsArray; // Deze lijst heeft de references naar alle kamers.
     [SerializeField] private GameObject eventSystem;
     [SerializeField] private float cameraSwitchTime = 0.3f;
+    [SerializeField] private ParticleSystem TeleportParticles;
 
     public bool IsZoomedIn = false;
 
@@ -58,23 +59,28 @@ public class CameraSystem : MonoBehaviour
         WipedRoomsList.Add(ConstantRoomsArray[^1]); // Voeg de main camera toe aan de lijst can transforms. (Zorg wel dat je de camera als laatste in de array zet.)
 
         // Omhoog tellen is uitzoomen omlaag tellen is inzoomen.
-        int i = (ZoomIn) ? WipedRoomsList.Count - 1 : 0; 
+        int i = (ZoomIn) ? WipedRoomsList.Count - 1 : 0;
+        int j = 0;
 
-        Debug.LogWarning(WipedRoomsList[i].gameObject.name);
+        TeleportParticles.Play();
+
         WipedRoomsList[i].gameObject.SetActive(false);
         WipedRoomsList[ZoomIn ? --i : ++i].gameObject.SetActive(true); // van kamer naar between of andersom.
+        TeleportParticles.gameObject.transform.position = ZoomIn ? CurrentRoom.position : transform.position;
 
         yield return new WaitForSeconds(cameraSwitchTime);
-        Debug.LogWarning(WipedRoomsList[i].gameObject.name);
         WipedRoomsList[i].gameObject.SetActive(false);
         WipedRoomsList[ZoomIn ? --i : ++i].gameObject.SetActive(true); // van between naar between2 of andersom.
+        TeleportParticles.gameObject.transform.position = ZoomIn ? CurrentRoom.position : transform.position;
+
 
         yield return new WaitForSeconds(cameraSwitchTime);
-        Debug.LogWarning(WipedRoomsList[i].gameObject.name);
         WipedRoomsList[i].gameObject.SetActive(false);
         WipedRoomsList[ZoomIn ? --i : ++i].gameObject.SetActive(true); // van between2 naar main of andersom.
+        TeleportParticles.gameObject.transform.position = ZoomIn ? CurrentRoom.position : transform.position;
 
-        gameObject.transform.position = ZoomIn ? new Vector3(WipedRoomsList[i].transform.position.x, WipedRoomsList[i].transform.position.y, 0) : gameObject.transform.position;
+        gameObject.transform.position = ZoomIn ? new Vector3(WipedRoomsList[i].transform.position.x, WipedRoomsList[i].transform.position.y, 0) : gameObject.transform.position * 100;
+        gameObject.GetComponent<Rigidbody2D>().linearVelocityY = 6;
 
         WipedRoomsList.Clear();
 
