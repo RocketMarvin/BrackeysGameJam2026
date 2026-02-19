@@ -52,20 +52,30 @@ public class InputReader : ScriptableObject, GameInput.IUIActions, GameInput.IGa
         _gameInput.Gameplay.Disable();
     }
 
-    // Gameplay Action Events
+    /// <summary> Gameplay Event </summary>
     public event Action<Vector2> MoveEvent;
+    /// <summary> Gameplay Event </summary>
     public event Action MoveCancelEvent;
+    /// <summary> Gameplay Event </summary>
     public event Action UseEvent;
+    /// <summary> Gameplay Event </summary>
     public event Action JumpEvent;
+    /// <summary> Gameplay Event </summary>
     public event Action JumpCancelEvent;
+    /// <summary> Gameplay Event </summary>
     public event Action InteractEvent;
+    /// <summary> Gameplay Event </summary>
     public event Action PauseEvent;
 
-    // UI Action Events
+    /// <summary> UI Event </summary>
     public event Action<Vector2> PointerMoveEvent;
+    /// <summary> UI Event </summary>
     public event Action ResumeEvent;
+    /// <summary> UI Event </summary>
     public event Action ClickEvent;
+    /// <summary> UI Event </summary>
     public event Action RightClickEvent;
+    /// <summary> UI Event </summary>
     public event Action SubmitEvent;
 
 

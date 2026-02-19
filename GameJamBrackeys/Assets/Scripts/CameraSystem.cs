@@ -12,7 +12,8 @@ public class CameraSystem : MonoBehaviour
 
     public bool IsZoomedIn = false;
 
-    private Transform CurrentRoom;
+    [HideInInspector] public Transform CurrentRoom;
+
     private List<Transform> WipedRoomsList = new(); // Deze lijst wordt na elke in en uit zoom leeg gemaakt omdat het gezet wordt op basis van welke kamer je aanklikt.
 
     void Start()
@@ -72,6 +73,8 @@ public class CameraSystem : MonoBehaviour
         Debug.LogWarning(WipedRoomsList[i].gameObject.name);
         WipedRoomsList[i].gameObject.SetActive(false);
         WipedRoomsList[ZoomIn ? --i : ++i].gameObject.SetActive(true); // van between2 naar main of andersom.
+
+        gameObject.transform.position = ZoomIn ? new Vector3(WipedRoomsList[i].transform.position.x, WipedRoomsList[i].transform.position.y, 0) : gameObject.transform.position;
 
         WipedRoomsList.Clear();
 
