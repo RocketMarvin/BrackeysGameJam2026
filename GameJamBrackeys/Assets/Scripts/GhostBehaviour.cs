@@ -59,145 +59,140 @@ public class GhostBehaviour : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        box = null;
-        currentState = GhostState.Moving;
-        ChooseNewTarget();
+
+        ChangeState(GhostState.Moving);
+
         print($"First Target: {currentTarget.name}");
-        behaviourCoroutine = StartCoroutine(BehaviourSelection());
     }
+
 
     void FixedUpdate()
     {
-        switch (currentState)
-        {
-            case GhostState.Idle:
-                rb.linearVelocity = Vector2.zero;
-                break;
-            case GhostState.Moving:
-                if (movementCoroutine == null) movementCoroutine = StartCoroutine(GhostMoving());
-                break;
-            case GhostState.Annoying:
-                if (annoyCoroutine == null) annoyCoroutine = StartCoroutine(AnnoyPlayer());
-                break;
-            case GhostState.Haunting:
-                if (hauntCoroutine == null) hauntCoroutine = StartCoroutine(HauntRoom());
-                break;
-        }
+        if (currentState == GhostState.Idle)
+            rb.linearVelocity = Vector2.zero;
     }
 
-    IEnumerator BehaviourSelection()
+    //IEnumerator BehaviourSelection()
+    //{
+    //    while (true)
+    //    {
+    //        if (currentState != GhostState.Annoying)
+    //            yield return new WaitForSeconds(10f);
+
+    //        previousState = currentState;
+
+    //        GhostState newState;
+
+    //        do
+    //        {
+    //            newState = (GhostState)Random.Range(0, (int)GhostState.Haunting + 1);
+    //        }
+    //        while (newState == previousState);
+
+    //        if (currentRoom == Rooms.AlienRoom && ghostHelped)
+    //        {
+    //            newState = GhostState.Haunting;
+    //        }
+
+    //        ChangeState(newState);
+    //        print($"New Ghost State: {currentState}");
+
+    //        //if (currentState != GhostState.Idle)
+    //        //{
+    //        //    behaviourCoroutine = null;
+    //        //    yield break;
+    //        //}
+
+    //        yield return null;
+    //    }
+    //}
+    GhostState GetRandomState()
     {
-        while (true)
+        GhostState newState;
+
+        do
         {
-            if (currentState != GhostState.Annoying)
-                yield return new WaitForSeconds(10f);
-
-            previousState = currentState;
-
-            GhostState newState;
-
-            do
-            {
-                newState = (GhostState)Random.Range(0, (int)GhostState.Haunting + 1);
-            }
-            while (newState == previousState);
-
-            if (currentRoom == Rooms.AlienRoom && ghostHelped)
-            {
-                newState = GhostState.Haunting;
-            }
-
-            ChangeState(newState);
-            print($"New Ghost State: {currentState}");
-
-            if (currentState != GhostState.Idle)
-            {
-                behaviourCoroutine = null;
-                yield break;
-            }
-
-            yield return null;
+            newState = (GhostState)Random.Range(0, 4);
         }
+        while (newState == currentState);
+
+        return newState;
     }
     void ChangeState(GhostState newState)
     {
-        // Stop alle actieve state coroutines
-        if (movementCoroutine != null)
-        {
-            StopCoroutine(movementCoroutine);
-            movementCoroutine = null;
-        }
-
-        if (hauntCoroutine != null)
-        {
-            StopCoroutine(hauntCoroutine);
-            hauntCoroutine = null;
-        }
-
-        if (annoyCoroutine != null)
-        {
-            StopCoroutine(annoyCoroutine);
-            annoyCoroutine = null;
-        }
+        StopAllCoroutines();
 
         rb.linearVelocity = Vector2.zero;
 
         currentState = newState;
+
+        switch (currentState)
+        {
+            case GhostState.Idle:
+                StartCoroutine(IdleState());
+                break;
+
+            case GhostState.Moving:
+                StartCoroutine(GhostMoving());
+                break;
+
+            case GhostState.Annoying:
+                StartCoroutine(AnnoyPlayer());
+                break;
+
+            case GhostState.Haunting:
+                StartCoroutine(HauntRoom());
+                break;
+        }
     }
 
     //+ Hieronder staan alle methodes die te maken hebben met het kiezen van een nieuw doel en er naartoe bewegen. Deze zijn allemaal met elkaar verbonden, omdat ze allemaal te maken hebben met het bewegen van de geest naar een nieuw doel.
     void ChooseNewTarget()
     {
+        // Moving -> altijd teleportMenu
         if (currentState == GhostState.Moving)
         {
-            currentTarget = ghostPrefabs[4].transform;
-            currentRoom = Rooms.HauntedRoom;
-        }
-        else
-        {
-            currentRoom = (Rooms)Random.Range(0, (int)Rooms.HauntedRoom + 1);
-
-            switch (currentRoom)
-            {
-                case Rooms.AlienRoom:
-                    currentTarget = ghostPrefabs[0].transform;
-                    break;
-                case Rooms.HauntedRoom:
-                    currentTarget = ghostPrefabs[1].transform;
-                    break;
-                case Rooms.OceanRoom:
-                    currentTarget = ghostPrefabs[2].transform;
-                    break;
-                case Rooms.DesertRoom:
-                    currentTarget = ghostPrefabs[3].transform;
-                    break;
-            }
-        }
-
-        if (currentState != GhostState.Moving)
-        {
+            currentTarget = ghostPrefabs[4].transform; // teleportMenu
             box = currentTarget.GetComponent<BoxCollider2D>();
             bounds = box.bounds;
+            target = box.bounds.center; // ga naar midden van teleportMenu
+            return;
+        }
 
-            target = GetRandomPointInBiome();
-        }
-        else
+        // Haunting / Annoying -> random kamer
+        currentRoom = (Rooms)Random.Range(0, (int)Rooms.HauntedRoom + 1);
+
+        switch (currentRoom)
         {
-            target = currentTarget.position; // direct naartoe bewegen
+            case Rooms.AlienRoom: currentTarget = ghostPrefabs[0].transform; break;
+            case Rooms.HauntedRoom: currentTarget = ghostPrefabs[1].transform; break;
+            case Rooms.OceanRoom: currentTarget = ghostPrefabs[2].transform; break;
+            case Rooms.DesertRoom: currentTarget = ghostPrefabs[3].transform; break;
         }
+
+        box = currentTarget.GetComponent<BoxCollider2D>();
+        bounds = box.bounds;
+        target = GetRandomPointInBiome();
+    }
+
+    IEnumerator IdleState()
+    {
+        yield return new WaitForSeconds(5f);
+        ChangeState(GhostState.Moving);
     }
 
     IEnumerator GhostMoving()
     {
-        print($"New target: {currentTarget.name}");
+        ChooseNewTarget();
 
         movementCoroutine = StartCoroutine(Movement());
 
-        yield return new WaitForSeconds(30f);
+        yield return new WaitForSeconds(10f);
 
         StopCoroutine(movementCoroutine);
         movementCoroutine = null;
-        behaviourCoroutine = StartCoroutine(BehaviourSelection());
+
+        ChangeState(GetRandomState());
     }
 
     IEnumerator NextDestination()
@@ -239,6 +234,8 @@ public class GhostBehaviour : MonoBehaviour
 
     IEnumerator AnnoyPlayer()
     {
+        box = null;
+
         if (currentTarget == null) yield break;
 
         if (!annoyingPlayer)
@@ -275,7 +272,7 @@ public class GhostBehaviour : MonoBehaviour
 
                     DropItem(currentInteractableTarget);
 
-                    if (behaviourCoroutine == null) behaviourCoroutine = StartCoroutine(BehaviourSelection());
+                    ChangeState(GhostState.Moving);
 
                     annoyCoroutine = null;
                     carryingItem = false;
@@ -336,13 +333,17 @@ public class GhostBehaviour : MonoBehaviour
     {
         ChooseNewTarget();
 
-        Coroutine localMovement = StartCoroutine(Movement());
+        movementCoroutine = StartCoroutine(Movement());
 
         yield return new WaitForSeconds(30f);
 
-        StopCoroutine(localMovement);
+        if (movementCoroutine != null)
+        {
+            StopCoroutine(movementCoroutine);
+            movementCoroutine = null;
+        }
 
-        behaviourCoroutine = StartCoroutine(BehaviourSelection());
+        ChangeState(GetRandomState());
     }
 
 
@@ -359,7 +360,7 @@ public class GhostBehaviour : MonoBehaviour
 
             if (Vector2.Distance(transform.position, target) < 0.3f)
             {
-                yield return new WaitForSeconds(1f); // kleine pauze tussen punten
+                yield return new WaitForSeconds(1f);
                 target = GetRandomPointInBiome();
             }
 
