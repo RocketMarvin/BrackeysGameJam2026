@@ -56,6 +56,8 @@ public class GhostBehaviour : MonoBehaviour
 
     public  Vector2 target;
 
+    //+ Hieronder staan alle methodes die te maken hebben met het starten van de geest en het veranderen van zijn staat. Deze zijn allemaal met elkaar verbonden, omdat ze allemaal te maken hebben met het starten van de geest en het veranderen van zijn staat.
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -65,47 +67,12 @@ public class GhostBehaviour : MonoBehaviour
         print($"First Target: {currentTarget.name}");
     }
 
-
     void FixedUpdate()
     {
         if (currentState == GhostState.Idle)
             rb.linearVelocity = Vector2.zero;
     }
 
-    //IEnumerator BehaviourSelection()
-    //{
-    //    while (true)
-    //    {
-    //        if (currentState != GhostState.Annoying)
-    //            yield return new WaitForSeconds(10f);
-
-    //        previousState = currentState;
-
-    //        GhostState newState;
-
-    //        do
-    //        {
-    //            newState = (GhostState)Random.Range(0, (int)GhostState.Haunting + 1);
-    //        }
-    //        while (newState == previousState);
-
-    //        if (currentRoom == Rooms.AlienRoom && ghostHelped)
-    //        {
-    //            newState = GhostState.Haunting;
-    //        }
-
-    //        ChangeState(newState);
-    //        print($"New Ghost State: {currentState}");
-
-    //        //if (currentState != GhostState.Idle)
-    //        //{
-    //        //    behaviourCoroutine = null;
-    //        //    yield break;
-    //        //}
-
-    //        yield return null;
-    //    }
-    //}
     GhostState GetRandomState()
     {
         GhostState newState;
@@ -118,6 +85,7 @@ public class GhostBehaviour : MonoBehaviour
 
         return newState;
     }
+
     void ChangeState(GhostState newState)
     {
         StopAllCoroutines();
@@ -145,21 +113,23 @@ public class GhostBehaviour : MonoBehaviour
                 break;
         }
     }
+    
+    //- Einde van de methodes die te maken hebben met het starten van de geest en het veranderen van zijn staat.
 
-    //+ Hieronder staan alle methodes die te maken hebben met het kiezen van een nieuw doel en er naartoe bewegen. Deze zijn allemaal met elkaar verbonden, omdat ze allemaal te maken hebben met het bewegen van de geest naar een nieuw doel.
+    //+ Hieronder staan alle methodes die te maken hebben met het kiezen van een nieuw doel en er naartoe bewegen.
+    
     void ChooseNewTarget()
     {
         // Moving -> altijd teleportMenu
         if (currentState == GhostState.Moving)
         {
-            currentTarget = ghostPrefabs[4].transform; // teleportMenu
+            currentTarget = ghostPrefabs[4].transform;
             box = currentTarget.GetComponent<BoxCollider2D>();
             bounds = box.bounds;
-            target = box.bounds.center; // ga naar midden van teleportMenu
+            target = box.bounds.center;
             return;
         }
 
-        // Haunting / Annoying -> random kamer
         currentRoom = (Rooms)Random.Range(0, (int)Rooms.HauntedRoom + 1);
 
         switch (currentRoom)
@@ -195,12 +165,6 @@ public class GhostBehaviour : MonoBehaviour
         ChangeState(GetRandomState());
     }
 
-    IEnumerator NextDestination()
-    {
-        currentTarget = null;
-        yield return new WaitForSeconds(3f);
-        ChooseNewTarget();
-    }
     void MoveTowardsTarget()
     {
         if (currentTarget == null) return;
@@ -228,9 +192,30 @@ public class GhostBehaviour : MonoBehaviour
         return new Vector2(randomX, randomY);
     }
 
+    IEnumerator Movement()
+    {
+        if (currentTarget == null)
+            ChooseNewTarget();
+
+        target = GetRandomPointInBiome();
+
+        while (true)
+        {
+            rb.MovePosition(Vector2.MoveTowards(rb.position, target, maxSpeed * Time.fixedDeltaTime));
+
+            if (Vector2.Distance(transform.position, target) < 0.3f)
+            {
+                yield return new WaitForSeconds(1f);
+                target = GetRandomPointInBiome();
+            }
+
+            yield return new WaitForFixedUpdate();
+        }
+    }
+
     //- Einde van de methodes die te maken hebben met het kiezen van een nieuw doel en er naartoe bewegen.
 
-    //+ Hieronder staan alle methodes die te maken hebben met het oppakken en laten vallen van een item. Deze zijn allemaal met elkaar verbonden, omdat ze allemaal te maken hebben met het oppakken en laten vallen van een item.
+    //+ Hieronder staan alle methodes die te maken hebben met het oppakken en laten vallen van een item.
 
     IEnumerator AnnoyPlayer()
     {
@@ -344,28 +329,6 @@ public class GhostBehaviour : MonoBehaviour
         }
 
         ChangeState(GetRandomState());
-    }
-
-
-    IEnumerator Movement()
-    {
-        if (currentTarget == null)
-            ChooseNewTarget();
-
-        target = GetRandomPointInBiome();
-
-        while (true)
-        {
-            rb.MovePosition(Vector2.MoveTowards(rb.position, target, maxSpeed * Time.fixedDeltaTime));
-
-            if (Vector2.Distance(transform.position, target) < 0.3f)
-            {
-                yield return new WaitForSeconds(1f);
-                target = GetRandomPointInBiome();
-            }
-
-            yield return new WaitForFixedUpdate();
-        }
     }
 
     //- Einde van de methodes die te maken hebben met het spoken in een kamer.
