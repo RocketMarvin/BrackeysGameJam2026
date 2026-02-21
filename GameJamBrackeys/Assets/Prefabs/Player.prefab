@@ -132,11 +132,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CameraSystem
   input: {fileID: 11400000, guid: b3282c97c760a504091679b0ae0db14c, type: 2}
   ConstantRoomsArray:
-    items:
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
+    items: []
+  eventSystem: {fileID: 0}
+  cameraSwitchTime: 0.3
+  TeleportParticles: {fileID: 0}
   IsZoomedIn: 0
   CurrentRoom: {fileID: 0}
 --- !u!50 &3659950241733919285
