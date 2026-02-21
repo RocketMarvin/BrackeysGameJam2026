@@ -23,36 +23,74 @@ public class ItemPickUpManager : MonoBehaviour
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
-        if (hasItem) currentItem.transform.position = itemSlot.position;
-        
-        
-        if (nearbyItems.Count > 0)
+        // Als we iets vasthouden > forceer alles uit en stop
+        if (hasItem)
         {
-            closestItem = nearbyItems[0];
-            foreach (GameObject item in nearbyItems)
+            if (closestItem != null)
             {
-                if (Vector3.Distance(transform.position, item.transform.position) < Vector3.Distance(transform.position, closestItem.transform.position))
-                {
-                    closestItem = item;
-                }
+                closestItem.transform.GetChild(0).gameObject.SetActive(false);
+                closestItem = null;
             }
+
+            if (currentItem != null)
+                currentItem.transform.position = itemSlot.position;
+
+            return; // Voorkomt dat nieuwe canvassen aan gaan
+        }
+
+        GameObject newClosest = null;
+        float shortestDistance = Mathf.Infinity;
+
+        foreach (GameObject item in nearbyItems)
+        {
+            float distance = Vector3.Distance(transform.position, item.transform.position);
+
+            if (distance < shortestDistance)
+            {
+                shortestDistance = distance;
+                newClosest = item;
+            }
+        }
+
+        // Als closest verandert > oude uit, nieuwe aan
+        if (closestItem != newClosest)
+        {
+            if (closestItem != null)
+                closestItem.transform.GetChild(0).gameObject.SetActive(false);
+
+            closestItem = newClosest;
+
+            if (closestItem != null)
+                closestItem.transform.GetChild(0).gameObject.SetActive(true);
+        }
+
+        // Als niets meer in range
+        if (nearbyItems.Count == 0 && closestItem != null)
+        {
+            closestItem.transform.GetChild(0).gameObject.SetActive(false);
+            closestItem = null;
         }
     }
 
     void PickupAndDrop()
     {
-        if (!hasItem)
+        if (!hasItem && closestItem != null)
         {
             currentItem = closestItem;
-            closestItem.GetComponent<Rigidbody2D>().gravityScale = 0;
+
+            currentItem.transform.GetChild(0).gameObject.SetActive(false);
+            closestItem = null;
+
+            currentItem.GetComponent<Rigidbody2D>().gravityScale = 0;
             hasItem = true;
         }
-        else
+        else if (hasItem)
         {
             hasItem = false;
-            closestItem.GetComponent<Rigidbody2D>().gravityScale = 1;
+            currentItem.GetComponent<Rigidbody2D>().gravityScale = 1;
+            currentItem = null;
         }
     }
 
