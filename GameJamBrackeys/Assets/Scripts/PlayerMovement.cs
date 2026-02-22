@@ -13,6 +13,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float groundCheckDistance = 0.6f;
     [SerializeField] private LayerMask groundLayer;
 
+    private Animator animator;
     private Rigidbody2D rb;
     private Vector2 moveInput;
     private float coyoteCounter = 0;
@@ -20,11 +21,14 @@ public class PlayerMovement : MonoBehaviour
     private bool isGrounded;
     private bool isHoldingJump = false;
     private float cancelJumpCounter = 0f;
+    private SpriteRenderer sprite;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         Physics2D.gravity = new Vector2(0, -13f);
+        sprite = GetComponent<SpriteRenderer>();
+        animator = GetComponent<Animator>();
     }
 
     private void Update()
@@ -43,36 +47,43 @@ public class PlayerMovement : MonoBehaviour
             coyoteCounter -= Time.deltaTime;
         }
         
-        if(!isHoldingJump)
-        {
-            cancelJumpCounter -= Time.deltaTime;
-            if(cancelJumpCounter < 0f)
-            {
-                if (rb.linearVelocity.y > 0)
-                {
-                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * jumpCutMultiplier);
-                }
-            }
-        }
-
-        //Timer
         jumpBufferCounter -= Time.deltaTime;
-
-        //Turn to cursor
-        //Vector3 mouseWorldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-        //transform.localScale = (mouseWorldPoint.x >= transform.position.x) ? new Vector3(1f, 1f, 1f) : new Vector3(-1f, 1f, 1f);
+        cancelJumpCounter -= Time.deltaTime;
     }
 
     private void FixedUpdate()
     {
         rb.linearVelocity = new Vector2(moveInput.x * moveSpeed, rb.linearVelocity.y);
 
+        if (isGrounded)
+        { 
+            
+        }
+
+        animator.SetBool("isWalking", Mathf.Abs(moveInput.x) > 0f && isGrounded);
+
+        if (isGrounded)
+        {
+            animator.SetBool("isJumping", false);
+            animator.SetBool("isFalling", false);
+        }
+
         if (jumpBufferCounter > 0 && coyoteCounter > 0)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
             coyoteCounter = 0;
             jumpBufferCounter = 0;
+            animator.SetBool("isJumping", true);
+        }
+
+        if (!isHoldingJump && cancelJumpCounter < 0f)
+        {
+            if (rb.linearVelocity.y > 0)
+            {
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * jumpCutMultiplier);
+                animator.SetBool("isFalling", true);
+                animator.SetBool("isJumping", false);
+            }
         }
     }
 
@@ -95,6 +106,7 @@ public class PlayerMovement : MonoBehaviour
     private void OnMove(Vector2 direction)
     {
         moveInput = direction;
+        sprite.flipX = direction.x > 0;
     }
 
     private void OnMoveCancel()
@@ -111,6 +123,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnJumpReleased()
     {
+        animator.SetBool("isJumping", false);
+        animator.SetBool("isFalling", true);
+
         isHoldingJump = false;
     }
 
