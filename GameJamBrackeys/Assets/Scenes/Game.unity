@@ -6908,6 +6908,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2537843020579214151, guid: dec5bbe3187588d4baf7366247d8a33c, type: 3}
+      propertyPath: itemSlot
+      value: 
+      objectReference: {fileID: 1035269080}
     - target: {fileID: 5003971211734182945, guid: dec5bbe3187588d4baf7366247d8a33c, type: 3}
       propertyPath: m_LocalPosition.x
       value: -81.48751
@@ -6960,6 +6964,10 @@ PrefabInstance:
       propertyPath: TeleportParticles
       value: 
       objectReference: {fileID: 1123731839}
+    - target: {fileID: 6523132469052194725, guid: dec5bbe3187588d4baf7366247d8a33c, type: 3}
+      propertyPath: m_SortingOrder
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 7279607693410561776, guid: dec5bbe3187588d4baf7366247d8a33c, type: 3}
       propertyPath: m_Name
       value: Player
@@ -9550,6 +9558,11 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!4 &1035269080 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2243857868628687312, guid: dec5bbe3187588d4baf7366247d8a33c, type: 3}
+  m_PrefabInstance: {fileID: 746565060}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1043096880
 GameObject:
   m_ObjectHideFlags: 0
