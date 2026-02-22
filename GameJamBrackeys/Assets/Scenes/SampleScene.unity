@@ -256,11 +256,7 @@ MonoBehaviour:
   - {fileID: 802530567}
   - {fileID: 1893047614}
   - {fileID: 1194393303}
-  interactables:
-  - {fileID: 1854450560}
-  - {fileID: 1233013250}
-  - {fileID: 1808965707}
-  - {fileID: 951182762}
+  interactables: []
   maxSpeed: 10
   slowDownDistance: 3
   annoyingPlayer: 0
