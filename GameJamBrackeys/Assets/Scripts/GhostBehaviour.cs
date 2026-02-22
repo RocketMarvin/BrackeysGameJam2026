@@ -228,8 +228,17 @@ public class GhostBehaviour : MonoBehaviour
             annoyingPlayer = true;
             carryingItem = false;
 
-            currentInteractableTarget = interactables[Random.Range(0, interactables.Count)];
-            currentTarget = currentInteractableTarget.transform;
+            if (interactables.Count > 0)
+            {
+                currentInteractableTarget = interactables[Random.Range(0, interactables.Count)];
+                currentTarget = currentInteractableTarget.transform;
+            }
+            else
+            {
+                annoyingPlayer = false;
+                ChangeState(GetRandomState());
+                yield break;
+            }
 
             print($"Targeting item: {currentTarget.name}");
         }
