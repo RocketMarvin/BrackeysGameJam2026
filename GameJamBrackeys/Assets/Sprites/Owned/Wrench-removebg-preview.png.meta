@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 04d1706c25ecc65498b9c7b5cf9efb84
+guid: 601e244b8cbc3ab41bec28936f539e63
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4783177402104371535
-    second: tile_0001_0
+      213: -2920187991935782340
+    second: Wrench-removebg-preview_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -46,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: tile_0001_0
+      name: Wrench-removebg-preview_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 32
-        height: 32
+        x: 87
+        y: 73
+        width: 307
+        height: 327
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1b6a4e1ce7dbe9db0800000000000000
-      internalID: -4783177402104371535
+      spriteID: c327e4f3e786977d0800000000000000
+      internalID: -2920187991935782340
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      tile_0001_0: -4783177402104371535
+      Wrench-removebg-preview_0: -2920187991935782340
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

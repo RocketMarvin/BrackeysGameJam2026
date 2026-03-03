@@ -5,7 +5,11 @@ TagManager:
   serializedVersion: 3
   tags:
   - Ground
-  - Interactable
+  - Sparkle
+  - NormalItem
+  - DiveSuit
+  - Teleporter
+  - UVViewer
   layers:
   - Default
   - TransparentFX
