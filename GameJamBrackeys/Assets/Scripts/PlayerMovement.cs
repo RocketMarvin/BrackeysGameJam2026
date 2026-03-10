@@ -12,6 +12,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float cancelJumpTimer = 0.2f;
     [SerializeField] private float groundCheckDistance = 0.6f;
     [SerializeField] private LayerMask groundLayer;
+    //[SerializeField] private Sprite normalSprite;
+    //[SerializeField] private Sprite oceanSprite;
 
     private Animator animator;
     private Rigidbody2D rb;
@@ -128,5 +130,21 @@ public class PlayerMovement : MonoBehaviour
 
         isHoldingJump = false;
     }
+
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    if (collision.CompareTag("Ocean"))
+    //    {
+    //        sprite.sprite = oceanSprite;
+    //        print(sprite.sprite.name);
+    //    }
+    //}
+    //void OnTriggerExit2D(Collider2D other)
+    //{
+    //    if (other.CompareTag("Ocean"))
+    //    {
+    //        sprite.sprite = normalSprite;
+    //    }
+    //}
 
 }

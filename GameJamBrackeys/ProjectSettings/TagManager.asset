@@ -10,6 +10,16 @@ TagManager:
   - DiveSuit
   - Teleporter
   - UVViewer
+  - Ocean
+  - AlienCapsule
+  - Wrench
+  - Crowbar
+  - HeatResister
+  - DoorMechanism
+  - WoodenBox
+  - CodeTranslator
+  - AlienDoor
+  - ZeeSpons
   layers:
   - Default
   - TransparentFX

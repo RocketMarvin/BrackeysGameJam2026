@@ -35,6 +35,12 @@ public class InputReader : ScriptableObject, GameInput.IUIActions, GameInput.IGa
         _gameInput.UI.Disable();
     }
 
+    public void SetUIAndGameplayActions()
+    {
+        _gameInput.Gameplay.Enable();
+        _gameInput.UI.Enable();
+    }       
+
     /// <summary>
     /// Zet input uit.
     /// </summary>

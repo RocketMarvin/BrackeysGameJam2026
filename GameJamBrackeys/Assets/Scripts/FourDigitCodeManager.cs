@@ -9,6 +9,11 @@ public class FourDigitCodeManager : MonoBehaviour
     void Start()
     {
         GenerateCode();
+        gameObject.SetActive(false);
+    }
+    public string GetCode()
+    {
+        return CurrentCode;
     }
 
     public void GenerateCode()

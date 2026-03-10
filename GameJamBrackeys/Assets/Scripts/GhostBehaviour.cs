@@ -31,7 +31,7 @@ public class GhostBehaviour : MonoBehaviour
     private float radius = 5f;
     private float rotationSpeed = 5f;
 
-    private bool ghostHelped = false;
+    public  bool ghostHelped = false;
     [SerializeField] private bool annoyingPlayer = false;
     [SerializeField] private bool carryingItem;
 
@@ -71,6 +71,7 @@ public class GhostBehaviour : MonoBehaviour
     {
         if (currentState == GhostState.Idle)
             rb.linearVelocity = Vector2.zero;
+
     }
 
     GhostState GetRandomState()
@@ -120,6 +121,17 @@ public class GhostBehaviour : MonoBehaviour
     
     void ChooseNewTarget()
     {
+        if (ghostHelped)
+        {
+            currentRoom = Rooms.AlienRoom;
+            currentTarget = ghostPrefabs[0].transform;
+
+            box = currentTarget.GetComponent<BoxCollider2D>();
+            bounds = box.bounds;
+            target = GetRandomPointInBiome();
+            return;
+        }
+
         // Moving -> altijd teleportMenu
         if (currentState == GhostState.Moving)
         {
@@ -338,6 +350,12 @@ public class GhostBehaviour : MonoBehaviour
         }
 
         ChangeState(GetRandomState());
+    }
+
+    public void HelpGhost()
+    {
+        ghostHelped = true;
+        ChangeState(GhostState.Haunting);
     }
 
     //- Einde van de methodes die te maken hebben met het spoken in een kamer.
